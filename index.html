@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width='device-width', initial-scale=1.0">
+    <title>STEPUP Calc Workshop</title>
+
+    <!-- CSS framework -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Graph library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <style>
+        body
+        {
+            margin: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Take-Home Exam</h1>
+    <h3>STEPUP Calculus Workshop - Daniel Permane</h3>
+    <h4>Question 1</h4>
+
+    <p class="w-50">I think it is practically impossible to find the absolute area because that would require there to be an infinite amount of approximations under the curve. I personally would go about dividing the graph up in rectangles, as demonstrated in the lecture, and as the width of the rectangles become smaller, it would theoretically get closer to the actual answer. Here is a demo I whipped up to display my method of thinking. The sum is basically wrong because I don't know how to actually solve Riemann sums yet but I tried my best; the actual area under the curve for <span><object data="defaulteq.svg" class="align-text-bottom"></object></span> is around 1.5.</p>
+    
+    <h5 style="margin-bottom: 1rem;">Riemann sum visualization</h5>
+    <form class="form-inline" id="submit-function" onsubmit="return false">
+        <div class="form-group mb-2 w-50">
+            <label for="function" class="form-label mr-3">Desired function:</label>
+            <input type="text" id="submitfunc" class="form-control w-50" placeholder="y = -((x - 1) * (x - 1)) + 1" value="y = -((x - 1) * (x - 1)) + 1">
+            <button type="submit" onclick="updateFunction()" class="btn btn-primary mb-2 align-text-bottom">Submit</button>
+        </div>
+    </form>
+
+    <label for="steps" class="form-label"><object data="dx.svg" width="20px" height="20px"></object></label><br>
+    <input type="number" id="steps" class="form-number" step="0.005" value="0.5" min="0" max="10"><br><br>
+
+    <label for="width" class="form-label">Width of grid:</label><br>
+    <input type="range" id="width" onchange="changeSlider(0)" class="form-range" step="0.05" min="0" max="10"><span class="ml-2" id="widthval">1</span><br>
+
+    <label for="height" class="form-label">Height of grid:</label><br>
+    <input type="range" id="height" onchange="changeSlider(1)" class="form-range" step="0.05" min="0" max="10"><span class="ml-2" id="heightval">1</span>
+
+    <h5 class="mt-5">Approximate area: <span id="area">0</span></h5>
+
+    <div class="canvas-container" style="position: relative; padding: 2rem; margin-bottom: 5rem;">
+        <div style="position: absolute; top: 0; left: 0; height: 750%; width: 100%;">
+            <canvas id="first-graph" style="width:100%;"></canvas>
+        </div>
+        <div style="position: absolute; top: 0; left: 0; height: 750%; width: 100%; margin-left: auto;">
+            <canvas id="second-graph"></canvas>
+        </div>
+    </div>
+    <h4 style="margin-top: 30rem">Question 3</h4>
+    <p>I want my head put on a spike</p>
+    <img src="diagram.jpg">
+    <script>
+        // y = -((x - 1) * (x - 1)) + 1
+        console.log("hi");
+        let step = 0.5;
+        console.log(document.getElementById('steps').value);
+        let func = "y = -((x - 1) * (x - 1)) + 1";
+        let y_data1 = [];
+        let x_data1 = [];
+        let y_data2 = [];
+        let x_data2 = [];
+        let width = 2;
+        let height = 1.5;
+
+        let widthElem = document.getElementById("width")
+        let heightElem = document.getElementById("height");
+
+        let widthVal = document.getElementById("widthval");
+        let heightVal = document.getElementById("heightval");
+
+        heightVal.innerHTML = height;
+        widthVal.innerHTML = width;
+
+        for (let x = 0; x <= width; x += step)
+        {
+            y_data1.push(Math.round(eval(func) * 100) / 100);
+            x_data1.push(Math.round(x * 100) / 100);
+        }
+
+        y_data1.push(height);
+        y_data1.push(height * -1);
+
+        function calcArea(xData, yData)
+        {
+            let area = 0;
+            for (let i = 0; i < xData.length; i++)
+            {
+                area += Math.pow((xData[i] + step) / 2, 2);
+                console.log(area + "hi");
+            }
+            
+            area *= step;
+            
+            document.getElementById('area').innerHTML = area;
+        }
+        
+        let firstGraph = new Chart("first-graph", {
+            type: "line",
+            data: {
+                labels: x_data1,
+                    datasets: [{
+                        fill: false,
+                        pointRadius: 1,
+                        borderColor: "rgba(255,0,0,0.5)",
+                        data: y_data1
+                    }]
+            },    
+            options: {
+                maintainAspectRatio: false,
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: "y = -(x - 1)^2 + 1",
+                    fontSize: 16
+                }
+            }
+        });
+
+        let secondGraph = new Chart("second-graph", {
+            type: "bar",
+            data: {
+                labels: x_data1,
+                datasets: [{
+                    labels: {
+                        display: false
+                    },
+                    backgroundColor: "rgba(255, 0, 0, 0.25)",
+                    data: y_data1
+                }]
+            },    
+            options: {
+                animation: {
+                   onComplete: () => {
+                    delayed: true;
+                   },
+                   delay: (context) => {
+                    return content.dataIndex * 300;
+                   }
+                },
+                showLines: false,
+                responsive: true,
+                maintainAspectRatio: false,
+                scaleShowLabels: false,
+                legend: {display: false},
+                title: {
+                    display: true,
+                    text: "",
+                    fontSize: 16
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            drawOnChartArea: false,
+                        },
+                        barPercentage: 1.25,
+                        ticks: {
+                            display: false
+                        }
+                    }],
+
+                    yAxes: [{
+                        gridLines: {
+                            drawOnChartArea: false,
+                        },
+                        ticks: {
+                            display: false
+                        }
+                    }]
+                }
+            }
+        });
+
+        calcArea(x_data1, y_data1);
+
+        function updateFunction()
+        {
+            func = document.getElementById('submitfunc').value;
+            
+            y_data2 = [];
+            x_data2 = [];
+
+            for (let x = 0; x <= width; x += step)
+            {
+                y_data2.push(Math.round(eval(func) * 100) / 100);
+                x_data2.push(Math.round(x * 100) / 100);
+            }
+            firstGraph.data.datasets[0].data = y_data2;
+            firstGraph.data.labels = x_data2;
+
+            secondGraph.data.datasets[0].data = y_data2;
+            secondGraph.data.labels = x_data2;
+
+            firstGraph.options.title.text = func;
+
+            firstGraph.update();
+            secondGraph.update();
+            calcArea(x_data2, y_data2);
+        }
+
+        let sliders = document.querySelectorAll(".form-range");
+        
+        function changeSlider(type)
+        {
+            if (type == 0)
+            {
+                widthVal.innerHTML = widthElem.value;
+                width = widthElem.value;
+                console.log(width);
+                
+            }
+            else
+            {
+                heightVal.innerHTML = heightElem.value;
+                height = heightElem.value;
+                console.log(height);
+            }
+            y_data2 = [];
+            x_data2 = [];
+            for (let x = 0; x <= width; x += step)
+            {
+                y_data2.push(Math.round(eval(func) * 100) / 100);
+                x_data2.push(Math.round(x * 100) / 100);
+            }
+
+            y_data2.push(height);
+            y_data2.push((height * -1) / 2);
+
+            firstGraph.data.datasets[0].data = y_data2;
+            firstGraph.data.labels = x_data2;
+
+            secondGraph.data.datasets[0].data = y_data2;
+            secondGraph.data.labels = x_data2;
+
+            firstGraph.update();
+            secondGraph.update();
+            calcArea(x_data2, y_data2);
+        }
+
+        document.getElementById('steps').addEventListener('input', function (evt) {
+            let stepValue = parseFloat(document.getElementById('steps').value);
+
+            if (stepValue != "" && stepValue != NaN)
+            {
+                step = stepValue;
+                console.log("step: " + stepValue);
+                y_data2 = [];
+                x_data2 = [];
+                for (let x = 0; x <= width; x += step)
+                {
+                    y_data2.push(Math.round(eval(func) * 100) / 100);
+                    x_data2.push(Math.round(x * 100) / 100);
+                }
+                firstGraph.data.datasets[0].data = y_data2;
+                firstGraph.data.labels = x_data2;
+
+                secondGraph.data.datasets[0].data = y_data2;
+                secondGraph.data.labels = x_data2;
+
+                firstGraph.update();
+                secondGraph.update();
+                calcArea(x_data2, y_data2);
+            }
+        });
+        
+    </script>
+</body>
+</html>

@@ -22,7 +22,7 @@
     <h3>STEPUP Calculus Workshop - Daniel Permane</h3>
     <h4>Question 1</h4>
 
-    <p class="w-50">I think it is practically impossible to find the absolute area because that would require there to be an infinite amount of approximations under the curve. I personally would go about dividing the graph up in rectangles, as demonstrated in the lecture, and as the width of the rectangles become smaller, it would theoretically get closer to the actual answer. Here is a demo I whipped up to display my method of thinking. The sum is basically wrong because I don't know how to actually solve Riemann sums yet but I tried my best; the actual area under the curve for <span><object data="defaulteq.svg" class="align-text-bottom"></object></span> is around 1.5.</p>
+    <p class="w-50">I think it is practically impossible to find the absolute area because that would require there to be an infinite amount of approximations under the curve. I personally would go about dividing the graph up in rectangles, as demonstrated in the lecture, and as the width of the rectangles become smaller, it would theoretically get closer to the actual answer. Here is a demo I whipped up to display my method of thinking. The sum is incorrect because it does not properly account for the signed area; the actual area under the curve for <span><object data="defaulteq.svg" class="align-text-bottom"></object></span>, which is the default equation, is around 1.5.</p>
     
     <h5 style="margin-bottom: 1rem;">Riemann sum visualization</h5>
     <p>Limitations include the function input, which cannot include exponents. Trigonometric functions must be written according to JavaScript's library in respect to x.</p>
@@ -53,9 +53,6 @@
             <canvas id="second-graph"></canvas>
         </div>
     </div>
-    <h4 style="margin-top: 30rem">Question 3</h4>
-    <p>I want my head put on a spike</p>
-    <img src="diagram.jpg">
     <script>
         // y = -((x - 1) * (x - 1)) + 1
         console.log("hi");
